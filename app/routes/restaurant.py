@@ -43,7 +43,6 @@ def get_one_restaurant(id):
         if restaurant.id == restaurant_id:
             return jsonify({
                 "id": restaurant.id,
-                # "nested_example": {"hey": "hi"},
                 "rating": restaurant.rating,
                 "name": restaurant.name,
                 "cuisine": restaurant.cuisine,
