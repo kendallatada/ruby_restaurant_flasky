@@ -22,7 +22,13 @@ def add_restaurant():
 @restaurant_bp.route("", methods=["GET"])
 def get_restaurants():
     response = []
-    all_restaurants = Restaurant.query.all()
+    name_query = request.args.get("name")
+
+    if name_query is None:
+        all_restaurants = Restaurant.query.all()
+    else:
+        all_restaurants = Restaurant.query.filter_by(name=name_query)
+
     for restaurant in all_restaurants:
         response.append(restaurant.to_dict())
 
