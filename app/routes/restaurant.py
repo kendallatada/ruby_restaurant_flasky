@@ -7,12 +7,7 @@ restaurant_bp = Blueprint("restaurant", __name__, url_prefix="/restaurant")
 @restaurant_bp.route("", methods=["POST"])
 def add_restaurant():
     request_body = request.get_json()
-    new_restaurant = Restaurant(
-        rating = request_body["rating"],
-        name = request_body["name"],
-        cuisine = request_body["cuisine"],
-        distance_from_ada = request_body["distance_from_ada"]
-    )
+    new_restaurant = Restaurant.from_dict(request_body)
 
     db.session.add(new_restaurant)
     db.session.commit()
@@ -37,7 +32,7 @@ def get_restaurants():
 #/restaurant/<id>
 @restaurant_bp.route("/<rest_id>", methods=["GET"])
 def get_one_restaurant(rest_id):
-    restaurant = validate_restaurant(rest_id)
+    restaurant = validate_item(Restaurant, rest_id)
 
     # if restaurant is None:
     #     return {"message": f"id {restaurant_id} not found"}, 404
@@ -47,7 +42,7 @@ def get_one_restaurant(rest_id):
 
 @restaurant_bp.route("/<rest_id>", methods=["PUT"])
 def update_restaurant(rest_id):
-    restaurant = validate_restaurant(rest_id)
+    restaurant = validate_item(Restaurant, rest_id)
 
     request_data = request.get_json()
 
@@ -63,7 +58,7 @@ def update_restaurant(rest_id):
 
 @restaurant_bp.route("/<rest_id>", methods=["DELETE"])
 def delete_restaurant(rest_id):
-    restaurant = validate_restaurant(rest_id)
+    restaurant = validate_item(Restaurant, rest_id)
 
     db.session.delete(restaurant)
     db.session.commit()
@@ -71,12 +66,12 @@ def delete_restaurant(rest_id):
     return {"msg": f"restaurant {rest_id} successfully deleted"}, 200
 
 
-def validate_restaurant(rest_id):
+def validate_item(model, item_id):
     try:
-        restaurant_id = int(rest_id)
+        item_id = int(item_id)
     except ValueError:
-        return abort(make_response({"message": f"invalid id: {rest_id}"}, 400))
+        return abort(make_response({"message": f"invalid id: {item_id}"}, 400))
     
-    return Restaurant.query.get_or_404(restaurant_id)
+    return model.query.get_or_404(item_id)
 
 
