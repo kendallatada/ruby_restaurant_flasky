@@ -11,14 +11,16 @@ def test_get_all_restaurants(client, two_restaurants):
         "name": "Olive Garden",
         "cuisine": "Italian",
         "rating": 5,
-        "distance_from_ada": 15
+        "distance_from_ada": 15,
+        "employees": []
     },
     {
         "id": 2,
         "name": "Texas Roadhouse",
         "cuisine": "American",
         "rating": 3,
-        "distance_from_ada": 46
+        "distance_from_ada": 46,
+        "employees": []
     }]
 
 def test_post_creates_restaurant(client):

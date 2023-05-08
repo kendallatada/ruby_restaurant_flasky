@@ -1,6 +1,7 @@
 from flask import abort, Blueprint, jsonify, make_response, request
 from app import db
 from app.models.restaurant import Restaurant
+from app.models.employee import Employee
 
 restaurant_bp = Blueprint("restaurant", __name__, url_prefix="/restaurant")
 
@@ -65,6 +66,27 @@ def delete_restaurant(rest_id):
 
     return {"msg": f"restaurant {rest_id} successfully deleted"}, 200
 
+@restaurant_bp.route("/<rest_id>/employee", methods=["POST"])
+def add_employee_to_restaurant(rest_id):
+    restaurant = validate_item(Restaurant, rest_id)
+
+    request_body = request.get_json()
+
+    employee = Employee.from_dict(request_body)
+    employee.restaurant = restaurant
+
+    db.session.add(employee)
+    db.session.commit()
+
+    return jsonify({"msg": f"Created employee with id {employee.id} and attached to {restaurant.id}"}), 201
+
+@restaurant_bp.route("/<rest_id>/employee", methods=["GET"])
+def get_all_employees_of_restaurant(rest_id):
+    restaurant = validate_item(Restaurant, rest_id)
+
+    employees = [employee.to_dict() for employee in restaurant.employees]
+
+    return jsonify(employees), 200
 
 def validate_item(model, item_id):
     try:

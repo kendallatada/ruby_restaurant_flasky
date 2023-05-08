@@ -6,14 +6,17 @@ class Restaurant(db.Model):
     name = db.Column(db.String)
     cuisine = db.Column(db.String)
     distance_from_ada = db.Column(db.Integer)
+    employees = db.relationship("Employee", back_populates="restaurant")
 
     def to_dict(self):
+        employees = [employee.to_dict() for employee in self.employees]
         return {
             "id": self.id,
             "rating": self.rating,
             "name": self.name,
             "cuisine": self.cuisine,
-            "distance_from_ada": self.distance_from_ada
+            "distance_from_ada": self.distance_from_ada,
+            "employees": employees
         }
     
     @classmethod
